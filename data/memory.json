@@ -1,0 +1,15 @@
+{
+  "name": "Ayush",
+  "preferences": {
+    "response_style": "simple and concise",
+    "coding_style": "simple and understandable",
+    "website_style": "modern and clean",
+    "unit_test_pref": "testing_value_123",
+    "preference": "I prefer concise answers and practical solutions."
+  },
+  "custom_notes": [
+    "Ayush is the user and developer.",
+    "Prefers practical solutions, concise explanations, and structured tables."
+  ],
+  "last_updated": "2026-09-11T22:26:03.700701"
+}

@@ -1,0 +1,39 @@
+# Virtual Environments
+.venv/
+venv/
+ENV/
+env/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Environment & Secrets
+.env
+*.pem
+*.key
+
+# Database & Logs
+data/agent.db
+data/agent.db-journal
+logs/*.log
+
+# Generated test artifacts
+workspace/*
+!workspace/.gitkeep
+files/word/*
+!files/word/.gitkeep
+files/excel/*
+!files/excel/.gitkeep
+files/ppt/*
+!files/ppt/.gitkeep
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# Testing
+.pytest_cache/

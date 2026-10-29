@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ayush AI - Personal Assistant</title>
+  <meta name="description" content="Ayush AI - Local Personal AI Agent for Windows powered by Ollama and Qwen3 8B" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/frontend/style.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-icon">⚡</div>
+        <div class="brand-text">
+          <h1>AYUSH AI</h1>
+          <span class="version-tag">V1.0 Windows</span>
+        </div>
+      </div>
+
+      <div class="status-card" id="statusCard">
+        <div class="status-indicator">
+          <span class="status-dot disconnected" id="statusDot"></span>
+          <span class="status-label" id="statusLabel">Checking Ollama...</span>
+        </div>
+        <div class="model-badge" id="modelBadge">Model: qwen3:8b</div>
+      </div>
+
+      <div class="sidebar-section">
+        <h3>Capabilities</h3>
+        <ul class="capability-list">
+          <li><span>🔍</span> Web Search & Research</li>
+          <li><span>📄</span> Word Document (.docx)</li>
+          <li><span>📊</span> Excel Spreadsheets (.xlsx)</li>
+          <li><span>📽️</span> PowerPoint Slides (.pptx)</li>
+          <li><span>🌐</span> Playwright Web Browser</li>
+          <li><span>🖥️</span> Safe Desktop Automation</li>
+          <li><span>🛡️</span> Approval Safety Guard</li>
+          <li><span>🧠</span> Personal Persistent Memory</li>
+        </ul>
+      </div>
+
+      <div class="sidebar-section">
+        <h3>Quick Prompts</h3>
+        <div class="quick-prompts">
+          <button class="prompt-chip" data-prompt="Search for latest AI news today and summarize the top 3 items.">
+            Latest AI news
+          </button>
+          <button class="prompt-chip" data-prompt="Search for Python developer jobs in Mumbai and create an Excel file named mumbai_python_jobs.xlsx with columns Job Title, Company, Location, and Summary.">
+            Search jobs & Excel
+          </button>
+          <button class="prompt-chip" data-prompt="Create a Word document named ai_agents_v1.docx titled 'Architecture of Local AI Agents' with 3 sections explaining local LLMs, tool calling, and safety.">
+            Create Word report
+          </button>
+          <button class="prompt-chip" data-prompt="Create a PowerPoint presentation named agent_overview.pptx with 3 slides introducing Ayush AI.">
+            Create PowerPoint
+          </button>
+          <button class="prompt-chip" data-prompt="Take a desktop screenshot.">
+            Take screenshot
+          </button>
+          <button class="prompt-chip" data-prompt="Open notepad">
+            Open Notepad
+          </button>
+          <button class="prompt-chip" data-prompt="Remember that I prefer short, bullet-point answers.">
+            Update memory
+          </button>
+        </div>
+      </div>
+
+      <div class="sidebar-footer">
+        <button id="memoryBtn" class="btn-secondary" title="View & Edit Memory">
+          <span>🧠</span> Memory
+        </button>
+        <button id="filesBtn" class="btn-secondary" title="View Generated Files">
+          <span>📁</span> Files
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Chat Workspace -->
+    <main class="chat-workspace">
+      <!-- Top Navigation -->
+      <header class="chat-header">
+        <div class="header-left">
+          <h2>Personal AI Workspace</h2>
+          <p class="subtitle">Autonomous agent with human-in-the-loop approvals</p>
+        </div>
+        <div class="header-actions">
+          <button id="clearChatBtn" class="btn-ghost" title="Clear conversation">
+            <span>🗑️</span> Clear Chat
+          </button>
+        </div>
+      </header>
+
+      <!-- Message History Display -->
+      <section class="chat-history" id="chatHistory">
+        <!-- Welcome Message -->
+        <div class="message-group assistant">
+          <div class="avatar">⚡</div>
+          <div class="message-body">
+            <div class="message-meta">Ayush AI • System</div>
+            <div class="bubble">
+              <p>Hello Ayush! I am your personal AI assistant running locally on your laptop.</p>
+              <p>I can conduct live web searches, write Word documents, create Excel sheets, build PowerPoint presentations, automate safe desktop apps, and retain your preferences.</p>
+              <p class="hint">Try asking: <em>"Search for Python developer jobs in Mumbai and create an Excel file."</em></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Chat Input Area -->
+      <footer class="chat-composer">
+        <form id="chatForm" class="composer-form">
+          <div class="input-wrapper">
+            <textarea
+              id="messageInput"
+              placeholder="Ask Ayush AI to research, generate office documents, or control safe desktop apps..."
+              rows="1"
+              required
+            ></textarea>
+            <button type="submit" id="sendBtn" class="send-btn" title="Send Message">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+              </svg>
+            </button>
+          </div>
+        </form>
+        <div class="composer-footnote">
+          <span>Local Engine: Ollama (Qwen3 8B) • Safe Sandbox: workspace/ & files/ • Max 8 iterations/turn</span>
+        </div>
+      </footer>
+    </main>
+  </div>
+
+  <!-- Memory Modal -->
+  <div class="modal-overlay hidden" id="memoryModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>🧠 Personal Memory Profile</h3>
+        <button class="close-modal-btn" id="closeMemoryModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-desc">This profile is persisted to <code>data/memory.json</code> and injected into Ayush AI's reasoning context.</p>
+        <div class="memory-viewer">
+          <pre id="memoryJsonDisplay">Loading memory...</pre>
+        </div>
+        <div class="memory-editor">
+          <h4>Add / Update Preference</h4>
+          <div class="form-row">
+            <input type="text" id="prefKeyInput" placeholder="Category (e.g. response_style, custom_note)" />
+            <input type="text" id="prefValInput" placeholder="Preference value..." />
+            <button id="savePrefBtn" class="btn-primary">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Files Modal -->
+  <div class="modal-overlay hidden" id="filesModal">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <h3>📁 Generated Files & Artifacts</h3>
+        <button class="close-modal-btn" id="closeFilesModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="files-columns">
+          <div class="files-col">
+            <h4>Word Documents (.docx)</h4>
+            <ul id="wordFilesList" class="file-list"><li>None yet</li></ul>
+          </div>
+          <div class="files-col">
+            <h4>Excel Sheets (.xlsx)</h4>
+            <ul id="excelFilesList" class="file-list"><li>None yet</li></ul>
+          </div>
+          <div class="files-col">
+            <h4>Presentations (.pptx)</h4>
+            <ul id="pptFilesList" class="file-list"><li>None yet</li></ul>
+          </div>
+          <div class="files-col">
+            <h4>Workspace Artifacts</h4>
+            <ul id="workspaceFilesList" class="file-list"><li>None yet</li></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/frontend/app.js"></script>
+</body>
+</html>
